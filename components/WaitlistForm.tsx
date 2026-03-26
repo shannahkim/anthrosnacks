@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 
-export default function WaitlistForm() {
+interface WaitlistFormProps {
+  variant?: 'light' | 'dark';
+}
+
+export default function WaitlistForm({ variant = 'dark' }: WaitlistFormProps) {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send to your backend/email service
     console.log('Email submitted:', email);
     setSubmitted(true);
     setTimeout(() => {
@@ -17,27 +20,39 @@ export default function WaitlistForm() {
     }, 3000);
   };
 
+  const isLight = variant === 'light';
+
   return (
     <div className="max-w-md mx-auto">
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
           required
-          className="flex-1 px-6 py-4 rounded-full border-2 border-gray-300 focus:border-orange-600 focus:outline-none text-gray-900"
+          className={`flex-1 px-6 py-4 border focus:outline-none font-light ${
+            isLight
+              ? 'bg-white border-gray-200 focus:border-black text-gray-900 placeholder-gray-400'
+              : 'bg-white/10 border-white/20 focus:border-white text-white placeholder-white/50'
+          }`}
         />
         <button
           type="submit"
-          className="bg-orange-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-orange-700 transition shadow-lg hover:shadow-xl whitespace-nowrap"
+          className={`px-8 py-4 font-light tracking-wide transition whitespace-nowrap ${
+            isLight
+              ? 'bg-black text-white hover:bg-gray-800'
+              : 'bg-white text-black hover:bg-gray-100'
+          }`}
         >
-          {submitted ? '✓ Joined!' : 'Join Waitlist'}
+          {submitted ? '✓ Joined!' : 'Get 10% OFF'}
         </button>
       </form>
       {submitted && (
-        <p className="text-center mt-4 text-green-600 font-semibold animate-bounce">
-          You're on the list! Check your email 📧
+        <p className={`text-center mt-6 font-light ${
+          isLight ? 'text-gray-600' : 'text-white/80'
+        }`}>
+          Thank you! Check your email for your 10% discount code.
         </p>
       )}
     </div>
